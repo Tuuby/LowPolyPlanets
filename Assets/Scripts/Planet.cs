@@ -469,18 +469,37 @@ public class Planet : MonoBehaviour
                             landPoly.m_Color = colorDirt;
                             break;
                     }
+
+                    foreach (Plant plant in Plants)
+                    {
+                        switch (plant.getState())
+                        {
+                            case -1:
+                                plant.position.m_Color = new Color32(0, 0, 0, 0);
+                                break;
+                            case 1:
+                                plant.position.m_Color = colorGreenerGrass;
+                                break;
+                            case 0:
+                                plant.position.m_Color = colorGrass;
+                                break;
+                            default:
+                                break;
+
+                        }
+                    }
                 }
                 break;
             case 1:
                 foreach (Polygon landPoly in landPolys)
                 {
-                    landPoly.m_Color = Color32.Lerp(colorToCold, colorToHot, landPoly.temperature / 255f);
+                    landPoly.m_Color = Color32.Lerp(colorToCold, colorToHot, (landPoly.temperature * 2) / 255f);
                 }
                 break;
             case 2:
                 foreach (Polygon landPoly in landPolys)
                 {
-                    landPoly.m_Color = Color32.Lerp(colorNeutral, colorToHumid, landPoly.humidity / 255f);
+                    landPoly.m_Color = Color32.Lerp(colorNeutral, colorToHumid, landPoly.humidity / 100f);
                 }
                 break;
             case 3:
@@ -564,11 +583,9 @@ public class Planet : MonoBehaviour
                 switch (state)
                 {
                     case -1:
-                        Debug.Log("Plant ded");
                         plant.position.m_Color = new Color32(0, 0, 0, 0);
                         break;
                     case 1:
-                        Debug.Log("Plant finished");
                         plant.position.m_Color = colorGreenerGrass;
                         break;
                     case 0:
@@ -585,8 +602,6 @@ public class Planet : MonoBehaviour
                 m_GroundMesh = GenerateMesh("Ground Mesh", m_GroundMaterial);
                 m_GroundMesh.AddComponent<MeshCollider>();
             }
-
-              
         }
     }
 

@@ -26,37 +26,71 @@ public class Plant
     {
         this.position = position;
         state = 0;
+
+        temperaturePref = 15;
+        temperatureTolerance = 25;
+        humidityPref = 60;
+        humidityTolerance = 30;
+        sulfurTolerance = 50;
+        groundTypePref = 2;
+    }
+
+    public sbyte getState()
+    {
+        return state;
     }
 
     public sbyte checkGroundCompatibility(float temperature, float humidity, float sulfurLevel, byte groundType)
     {
+        if (state == 1 || state == -1)
+            return state;
+
         lifetime += Time.deltaTime;
 
         //TODO: make more checks if plant can grow
-
-        if (lifetime >= 5)
+        if (Mathf.Abs(temperature - temperaturePref) <= temperatureTolerance)
         {
-            if (groundType == groundTypePref)
+            if (Mathf.Abs(humidity - humidityPref) <= humidityTolerance)
             {
-                state = 1;
-                lifetime = 11;
-            }
-        }
-        else if (lifetime >= 10)
-        {
-            if (groundType == 3)
-            {
-                state = -1;
-            }
-            else if (lifetime >= 10)
-            {
-                state = 1;
-                lifetime = 11;
+                if (sulfurLevel <= sulfurTolerance)
+                {
+                    if (groundType == groundTypePref)
+                    {
+                        if (lifetime >= 5)
+                        {
+                            state = 1;
+                            lifetime = 11;
+                        }
+                        else
+                            state = 0;
+                    }
+                    else
+                    {
+                        if (lifetime >= 10)
+                        {
+                            state = 1;
+                            lifetime = 11;
+                        }
+                        else
+                            state = 0;
+                    }
+                }
+                else
+                {
+                    state = -1;
+                    Debug.Log("To much sulfur, you monkey");
+                }
             }
             else
             {
-                state = 0;
+                state = -1;
+                Debug.Log("Not the right humidity");
             }
+        }
+        else
+        {
+            state = -1;
+            Debug.Log("Not the right temperature");
         }
 
         return state;

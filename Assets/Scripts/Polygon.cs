@@ -29,11 +29,15 @@ public class Polygon
         temperature = NoiseTest.Noise.CalcPixel3D((int)(centre.x * 100), (int)(centre.y * 100), (int)(centre.z * 100), 0.005f);
         temperature /= 2;
         temperature -= temperatureOffset;
+        //calculates values between 0-temperatureOffset and 127-temperatureOffset
+        //for temperatureOffset = 50 that means [-50, 77]
     }
 
     public void calculateHumidity(Vector3 centre)
     {
         humidity = NoiseTest.Noise.CalcPixel3D((int)(centre.x * 100), (int)(centre.y * 100), (int)(centre.z * 100), 0.005f);
+        humidity /= 2.55f;
+        //calculates values between [0, 100]
     }
 
     public void calculateSulfurLevel(Vector3 centre)
@@ -42,6 +46,7 @@ public class Polygon
         sulfurLevel -= 100;
         if (sulfurLevel < 0)
             sulfurLevel = 0;
+        //calculates values between [0, 155]
     }
 
     public bool isNeighbourOf(Polygon other_poly)
