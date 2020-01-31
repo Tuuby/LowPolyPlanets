@@ -513,6 +513,7 @@ public class Planet : MonoBehaviour
         if (m_GroundMesh != null)
             Destroy(m_GroundMesh);
         m_GroundMesh = GenerateMesh("Ground Mesh", m_GroundMaterial);
+        m_GroundMesh.AddComponent<MeshCollider>();
     }
 
     public void generateTemperature()
@@ -583,13 +584,17 @@ public class Planet : MonoBehaviour
                 switch (state)
                 {
                     case -1:
-                        plant.position.m_Color = new Color32(0, 0, 0, 0);
+                        plant.position.m_Color = new Color32(209, 166, 73, 0);
                         break;
                     case 1:
                         plant.position.m_Color = colorGreenerGrass;
                         break;
                     case 0:
                         plant.position.m_Color = colorGrass;
+                        break;
+                    case -2:
+                        plant.position.m_Color = colorDirt;
+                        Plants.Remove(plant);
                         break;
                     default:
                         break;

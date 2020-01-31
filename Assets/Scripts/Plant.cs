@@ -10,8 +10,9 @@ public class Plant
     //@0 = just planted
     //@1 = fully grown
     //@-1 = dried out
+    //@-2 = to be destroyed
     sbyte state;
-    public sbyte lastState = -2;
+    public sbyte lastState = -3;
 
     float temperaturePref;
     float temperatureTolerance;
@@ -42,10 +43,14 @@ public class Plant
 
     public sbyte checkGroundCompatibility(float temperature, float humidity, float sulfurLevel, byte groundType)
     {
-        if (state == 1 || state == -1)
-            return state;
-
         lifetime += Time.deltaTime;
+
+        if (state == 1 || state == -1)
+        {
+            if (lifetime >= 20 && state == -1)
+                state = -2;
+            return state;
+        }
 
         //TODO: make more checks if plant can grow
         if (Mathf.Abs(temperature - temperaturePref) <= temperatureTolerance)
@@ -59,7 +64,7 @@ public class Plant
                         if (lifetime >= 5)
                         {
                             state = 1;
-                            lifetime = 11;
+                            lifetime = 21;
                         }
                         else
                             state = 0;
@@ -69,7 +74,7 @@ public class Plant
                         if (lifetime >= 10)
                         {
                             state = 1;
-                            lifetime = 11;
+                            lifetime = 21;
                         }
                         else
                             state = 0;
