@@ -24,6 +24,8 @@ public class Planet : MonoBehaviour
     public bool mode = false;
     int viewMode;
 
+    public Player player;
+
     PolySet landPolys;
 
     Color32 colorOcean = new Color32(0, 80, 220, 255 / 2);
@@ -48,12 +50,14 @@ public class Planet : MonoBehaviour
         Subdivide(3);
         CalculateNeighbours();
 
+        System.Random rnd = new System.Random();
+
         foreach (Polygon p in m_Polygons)
             p.m_Color = colorOcean;
 
         landPolys = new PolySet();
         PolySet sides;
-            System.Random rnd = new Random();
+            rnd = new Random();
 
         for (int i = 0; i < 5; i++)
         {
@@ -91,7 +95,9 @@ public class Planet : MonoBehaviour
         m_OceanMesh = GenerateMesh("Ocean Surface", m_OceanMaterial);
 
         generateTemperature();
+        NoiseTest.Noise.Seed = rnd.Next();
         generateHumidity();
+        NoiseTest.Noise.Seed = rnd.Next();
         generateSulfurLevels();
 
         foreach (Polygon landPoly in landPolys)
@@ -528,9 +534,6 @@ public class Planet : MonoBehaviour
             centre /= poly.m_Vertices.Count;
             poly.calculateTemperature(centre, temperatureOffset);
         }
-
-        System.Random rnd = new System.Random();
-        NoiseTest.Noise.Seed = rnd.Next();
     }
 
     public void generateHumidity()
@@ -545,9 +548,6 @@ public class Planet : MonoBehaviour
             centre /= poly.m_Vertices.Count;
             poly.calculateHumidity(centre);
         }
-
-        System.Random rnd = new System.Random();
-        NoiseTest.Noise.Seed = rnd.Next();
     }
 
     public void generateSulfurLevels()
@@ -562,9 +562,6 @@ public class Planet : MonoBehaviour
             centre /= poly.m_Vertices.Count;
             poly.calculateSulfurLevel(centre);
         }
-
-        System.Random rnd = new System.Random();
-        NoiseTest.Noise.Seed = rnd.Next();
     }
 
     private void Update()
@@ -608,6 +605,8 @@ public class Planet : MonoBehaviour
                 m_GroundMesh.AddComponent<MeshCollider>();
             }
         }
+
+        player.updateProgress(Plants.Count / (float)landPolys.Count);
     }
 
     private void GetClickedPoly()
@@ -622,6 +621,11 @@ public class Planet : MonoBehaviour
 
             if (landPolys.Contains(p))
             {
+                foreach (Plant plant in Plants)
+                {
+                    if (plant.position == p)
+                        return;
+                }
                 Plants.Add(new Plant(p));
             }
         }

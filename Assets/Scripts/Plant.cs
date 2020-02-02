@@ -29,10 +29,10 @@ public class Plant
         state = 0;
 
         temperaturePref = 15;
-        temperatureTolerance = 25;
-        humidityPref = 60;
-        humidityTolerance = 30;
-        sulfurTolerance = 50;
+        temperatureTolerance = 100;
+        humidityPref = 50;
+        humidityTolerance = 50;
+        sulfurTolerance = 155;
         groundTypePref = 2;
     }
 
