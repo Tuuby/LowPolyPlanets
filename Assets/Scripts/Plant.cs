@@ -15,10 +15,10 @@ public class Plant
     public sbyte lastState = -3;
 
     float temperaturePref;
-    float temperatureTolerance;
+    public static float temperatureTolerance = 10;
     float humidityPref;
-    float humidityTolerance;
-    float sulfurTolerance;
+    public static float humidityTolerance = 10;
+    public static float sulfurTolerance = 15;
     byte groundTypePref;
 
     private float lifetime;
@@ -29,10 +29,7 @@ public class Plant
         state = 0;
 
         temperaturePref = 15;
-        temperatureTolerance = 100;
-        humidityPref = 50;
-        humidityTolerance = 50;
-        sulfurTolerance = 155;
+        humidityPref = 40;
         groundTypePref = 2;
     }
 
