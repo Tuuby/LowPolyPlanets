@@ -96,24 +96,7 @@ public class Planet : MonoBehaviour
 
         foreach (Polygon landPoly in landPolys)
         {
-            switch (landPoly.groundType)
-            {
-                case 0:
-                    landPoly.m_Color = colorSand;
-                    break;
-                case 1:
-                    landPoly.m_Color = colorGravel;
-                    break;
-                case 2:
-                    landPoly.m_Color = colorDirt;
-                    break;
-                case 3:
-                    landPoly.m_Color = colorStone;
-                    break;
-                default:
-                    landPoly.m_Color = colorDirt;
-                    break;
-            }
+            setGroundColor(landPoly);
         }
 
         sides = Extrude(landPolys, 0.05f);
@@ -451,24 +434,7 @@ public class Planet : MonoBehaviour
             case 0:
                 foreach (Polygon landPoly in landPolys)
                 {
-                    switch (landPoly.groundType)
-                    {
-                        case 0:
-                            landPoly.m_Color = colorSand;
-                            break;
-                        case 1:
-                            landPoly.m_Color = colorGravel;
-                            break;
-                        case 2:
-                            landPoly.m_Color = colorDirt;
-                            break;
-                        case 3:
-                            landPoly.m_Color = colorStone;
-                            break;
-                        default:
-                            landPoly.m_Color = colorDirt;
-                            break;
-                    }
+                    setGroundColor(landPoly);
 
                     foreach (Plant plant in Plants)
                     {
@@ -567,6 +533,28 @@ public class Planet : MonoBehaviour
         NoiseTest.Noise.Seed = rnd.Next();
     }
 
+    private void setGroundColor(Polygon poly)
+    {
+        switch (poly.groundType)
+        {
+            case 0:
+                poly.m_Color = colorSand;
+                break;
+            case 1:
+                poly.m_Color = colorGravel;
+                break;
+            case 2:
+                poly.m_Color = colorDirt;
+                break;
+            case 3:
+                poly.m_Color = colorStone;
+                break;
+            default:
+                poly.m_Color = colorDirt;
+                break;
+        }
+    }
+
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -593,7 +581,7 @@ public class Planet : MonoBehaviour
                         plant.position.m_Color = colorGrass;
                         break;
                     case -2:
-                        plant.position.m_Color = colorDirt;
+                        setGroundColor(plant.position);
                         Plants.Remove(plant);
                         break;
                     default:
