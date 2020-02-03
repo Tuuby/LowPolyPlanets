@@ -18,6 +18,7 @@ public class Planet : MonoBehaviour
     public List<Vector3> m_Vertices;
 
     public List<Plant> Plants;
+    public List<Plant> finishedPlants;
 
     public int temperatureOffset = 50;
 
@@ -141,6 +142,7 @@ public class Planet : MonoBehaviour
         m_Polygons = new List<Polygon>();
         m_Vertices = new List<Vector3>();
         Plants = new List<Plant>();
+        finishedPlants = new List<Plant>();
 
         float t = (1.0f + Mathf.Sqrt(5.0f)) / 2;
 
@@ -552,6 +554,11 @@ public class Planet : MonoBehaviour
         }
     }
 
+    private bool isDead(Plant p)
+    {
+        return p.getState() == -2;
+    }
+
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -573,13 +580,13 @@ public class Planet : MonoBehaviour
                         break;
                     case 1:
                         plant.position.m_Color = colorGreenerGrass;
+                        finishedPlants.Add(plant);
                         break;
                     case 0:
                         plant.position.m_Color = colorGrass;
                         break;
                     case -2:
                         setGroundColor(plant.position);
-                        Plants.Remove(plant);
                         break;
                     default:
                         break;
@@ -594,7 +601,9 @@ public class Planet : MonoBehaviour
             }
         }
 
-        player.updateProgress(Plants.Count / (float)landPolys.Count);
+        Plants.RemoveAll(isDead);
+
+        player.updateProgress(finishedPlants.Count / (float)landPolys.Count);
     }
 
     private void GetClickedPoly()
