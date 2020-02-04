@@ -15,11 +15,13 @@ public class Plant
     public sbyte lastState = -3;
 
     float temperaturePref;
-    public static float temperatureTolerance = 10;
+    public static float temperatureTolerance = 100;
     float humidityPref;
-    public static float humidityTolerance = 10;
-    public static float sulfurTolerance = 15;
+    public static float humidityTolerance = 100;
+    public static float sulfurTolerance = 150;
     byte groundTypePref;
+
+    public GameObject oldGameObject;
 
     private float lifetime;
 
@@ -47,52 +49,73 @@ public class Plant
             if (lifetime >= 20 && state == -1)
                 state = -2;
             return state;
-        }
-
-        //TODO: make more checks if plant can grow
-        if (Mathf.Abs(temperature - temperaturePref) <= temperatureTolerance)
+        } 
+        else
         {
-            if (Mathf.Abs(humidity - humidityPref) <= humidityTolerance)
+            if (groundType == groundTypePref)
             {
-                if (sulfurLevel <= sulfurTolerance)
+                if (lifetime >= 5)
                 {
-                    if (groundType == groundTypePref)
+                    if (Mathf.Abs(temperature - temperaturePref) <= temperatureTolerance)
                     {
-                        if (lifetime >= 5)
+                        if (Mathf.Abs(humidity - humidityPref) <= humidityTolerance)
                         {
-                            state = 1;
-                            lifetime = 21;
+                            if (sulfurLevel <= sulfurTolerance)
+                            {
+                                state = 1;
+                                lifetime = 21;
+                            }
+                            else
+                            {
+                                state = -1;
+                                Debug.Log("To much sulfur, you monkey");
+                            }
                         }
                         else
-                            state = 0;
+                        {
+                            state = -1;
+                            Debug.Log("Not the right humidity");
+                        }
                     }
                     else
                     {
-                        if (lifetime >= 10)
-                        {
-                            state = 1;
-                            lifetime = 21;
-                        }
-                        else
-                            state = 0;
+                        state = -1;
+                        Debug.Log("Not the right temperature");
                     }
                 }
-                else
-                {
-                    state = -1;
-                    Debug.Log("To much sulfur, you monkey");
-                }
-            }
+            } 
             else
             {
-                state = -1;
-                Debug.Log("Not the right humidity");
+                if (lifetime >= 10)
+                {
+                    if (Mathf.Abs(temperature - temperaturePref) <= temperatureTolerance)
+                    {
+                        if (Mathf.Abs(humidity - humidityPref) <= humidityTolerance)
+                        {
+                            if (sulfurLevel <= sulfurTolerance)
+                            {
+                                state = 1;
+                                lifetime = 21;
+                            }
+                            else
+                            {
+                                state = -1;
+                                Debug.Log("To much sulfur, you monkey");
+                            }
+                        }
+                        else
+                        {
+                            state = -1;
+                            Debug.Log("Not the right humidity");
+                        }
+                    }
+                    else 
+                    {
+                        state = -1;
+                        Debug.Log("Not the right temperature");
+                    }
+                }
             }
-        }
-        else
-        {
-            state = -1;
-            Debug.Log("Not the right temperature");
         }
 
         return state;

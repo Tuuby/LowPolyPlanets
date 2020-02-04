@@ -11,6 +11,10 @@ public class Planet : MonoBehaviour
 
     public Camera CameraPosition;
 
+    public GameObject SaplingPrefab;
+    public GameObject DeadPrefab;
+    public GameObject PlantPrefab;
+
     GameObject m_GroundMesh;
     GameObject m_OceanMesh;
 
@@ -316,6 +320,17 @@ public class Planet : MonoBehaviour
         }
     }
 
+    public Vector3 calculateCentre(Polygon poly)
+    {
+        Vector3 centre = Vector3.zero;
+        foreach (int vertex in poly.m_Vertices)
+        {
+            centre += m_Vertices[vertex];
+        }
+        centre /= poly.m_Vertices.Count;
+        return centre;
+    }
+
     public List<int> CloneVertices(List<int> old_verts)
     {
         List<int> new_verts = new List<int>();
@@ -443,25 +458,6 @@ public class Planet : MonoBehaviour
                 foreach (Polygon landPoly in landPolys)
                 {
                     setGroundColor(landPoly);
-
-                    foreach (Plant plant in Plants)
-                    {
-                        switch (plant.getState())
-                        {
-                            case -1:
-                                plant.position.m_Color = new Color32(0, 0, 0, 0);
-                                break;
-                            case 1:
-                                plant.position.m_Color = colorGreenerGrass;
-                                break;
-                            case 0:
-                                plant.position.m_Color = colorGrass;
-                                break;
-                            default:
-                                break;
-
-                        }
-                    }
                 }
                 break;
             case 1:
@@ -495,11 +491,7 @@ public class Planet : MonoBehaviour
         Vector3 centre = Vector3.zero;
         foreach (Polygon poly in m_Polygons)
         {
-            foreach (int vertex in poly.m_Vertices)
-            {
-                centre += m_Vertices[vertex];
-            }
-            centre /= poly.m_Vertices.Count;
+            centre = calculateCentre(poly);
             poly.calculateTemperature(centre, temperatureOffset);
         }
     }
@@ -573,20 +565,51 @@ public class Planet : MonoBehaviour
             
             if (state != lastState)
             {
+
+                Vector3 centre = Vector3.zero;
                 switch (state)
                 {
                     case -1:
-                        plant.position.m_Color = new Color32(209, 166, 73, 0);
+                        Destroy(plant.oldGameObject);
+
+                        GameObject dead = Instantiate(DeadPrefab);
+                        dead.transform.parent = transform;
+
+                        centre = calculateCentre(plant.position);
+
+                        dead.transform.localPosition = centre;
+                        dead.transform.LookAt(transform);
+                        plant.oldGameObject = dead;
+
                         break;
                     case 1:
-                        plant.position.m_Color = colorGreenerGrass;
+                        Destroy(plant.oldGameObject);
+
+                        GameObject plant1 = Instantiate(PlantPrefab);
+                        plant1.transform.parent = transform;
+
+                        centre = calculateCentre(plant.position);
+
+                        plant1.transform.localPosition = centre;
+                        plant1.transform.LookAt(transform);
+                        plant.oldGameObject = plant1;
+
+                        plant.position.m_Color = colorGrass;
+
                         finishedPlants.Add(plant);
                         break;
                     case 0:
-                        plant.position.m_Color = colorGrass;
+                        GameObject sapling = Instantiate(SaplingPrefab);
+                        sapling.transform.parent = transform;
+
+                        centre = calculateCentre(plant.position);
+
+                        sapling.transform.localPosition = centre;
+                        sapling.transform.LookAt(transform);
+                        plant.oldGameObject = sapling;
                         break;
                     case -2:
-                        setGroundColor(plant.position);
+                        Destroy(plant.oldGameObject);
                         break;
                     default:
                         break;
@@ -616,14 +639,29 @@ public class Planet : MonoBehaviour
         {
             Polygon p = m_Polygons[hit.triangleIndex];
 
-            if (landPolys.Contains(p))
+            if (viewMode == 0)
             {
-                foreach (Plant plant in Plants)
+                if (landPolys.Contains(p))
                 {
-                    if (plant.position == p)
-                        return;
+                    foreach (Plant plant in Plants)
+                    {
+                        if (plant.position == p)
+                            return;
+                    }
+                    Plants.Add(new Plant(p));
                 }
-                Plants.Add(new Plant(p));
+            } 
+            else if (viewMode == 1)
+            {
+                Debug.Log("Temperatur: " + p.temperature);
+            }
+            else if (viewMode == 2)
+            {
+                Debug.Log("Feuchtigkeit: " + p.humidity);
+            }
+            else
+            {
+                Debug.Log("Schwefelbelastung: " + p.sulfurLevel);
             }
         }
     }
