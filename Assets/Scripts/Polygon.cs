@@ -43,10 +43,10 @@ public class Polygon
     public void calculateSulfurLevel(Vector3 centre)
     {
         sulfurLevel = NoiseTest.Noise.CalcPixel3D((int)(centre.x * 100), (int)(centre.y * 100), (int)(centre.z * 100), 0.005f);
-        sulfurLevel -= 100;
+        sulfurLevel -= 155;
         if (sulfurLevel < 0)
             sulfurLevel = 0;
-        //calculates values between [0, 155]
+        //calculates values between [0, 100]
     }
 
     public bool isNeighbourOf(Polygon other_poly)

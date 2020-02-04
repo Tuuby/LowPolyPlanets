@@ -47,12 +47,11 @@ public class Planet : MonoBehaviour
     Color32 colorToHumid = new Color32(15, 135, 255, 0);
     Color32 colorSulfur = new Color32(200, 200, 0, 0);
     Color32 colorNeutral = new Color32(255, 255, 255, 0);
-    Color32 colorGreenerGrass = new Color32(21, 140, 0, 0);
 
     public void Start()
     {
         InitAsIcosohedron();
-        Subdivide(3);
+        Subdivide(2);
         CalculateNeighbours();
 
         System.Random rnd = new System.Random();
@@ -475,7 +474,7 @@ public class Planet : MonoBehaviour
             case 3:
                 foreach (Polygon landPoly in landPolys)
                 {
-                    landPoly.m_Color = Color32.Lerp(colorNeutral, colorSulfur, landPoly.sulfurLevel / 255f);
+                    landPoly.m_Color = Color32.Lerp(colorNeutral, colorSulfur, landPoly.sulfurLevel / 100f);
                 }
                 break;
         }
@@ -544,6 +543,11 @@ public class Planet : MonoBehaviour
                 poly.m_Color = colorDirt;
                 break;
         }
+
+        foreach (Plant plant in finishedPlants)
+        {
+            plant.position.m_Color = colorGrass;
+        }
     }
 
     private bool isDead(Plant p)
@@ -594,9 +598,11 @@ public class Planet : MonoBehaviour
                         plant1.transform.LookAt(transform);
                         plant.oldGameObject = plant1;
 
-                        plant.position.m_Color = colorGrass;
+                        if (viewMode == 0)
+                            plant.position.m_Color = colorGrass;
 
                         finishedPlants.Add(plant);
+                        player.plantFinishes();
                         break;
                     case 0:
                         GameObject sapling = Instantiate(SaplingPrefab);
@@ -648,7 +654,16 @@ public class Planet : MonoBehaviour
                         if (plant.position == p)
                             return;
                     }
-                    Plants.Add(new Plant(p));
+
+                    if (player.plantPlanted(10))
+                    {
+                        Plants.Add(new Plant(p));
+                    }
+                    else
+                    {
+                        Debug.Log("Not enough currency");
+                    }
+                    
                 }
             } 
             else if (viewMode == 1)

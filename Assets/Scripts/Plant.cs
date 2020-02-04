@@ -15,10 +15,10 @@ public class Plant
     public sbyte lastState = -3;
 
     float temperaturePref;
-    public static float temperatureTolerance = 100;
+    public static float temperatureTolerance = 10;
     float humidityPref;
-    public static float humidityTolerance = 100;
-    public static float sulfurTolerance = 150;
+    public static float humidityTolerance = 10;
+    public static float sulfurTolerance = 15;
     byte groundTypePref;
 
     public GameObject oldGameObject;
@@ -68,7 +68,7 @@ public class Plant
                             else
                             {
                                 state = -1;
-                                Debug.Log("To much sulfur, you monkey");
+                                Debug.Log("To much sulfur");
                             }
                         }
                         else
