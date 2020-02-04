@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = System.Random;
 
 public class Planet : MonoBehaviour
@@ -24,7 +23,10 @@ public class Planet : MonoBehaviour
     public List<Plant> Plants;
     public List<Plant> finishedPlants;
 
-    public int temperatureOffset = 50;
+    public int temperatureOffset;
+
+    public Text statusText;
+    public GameObject popUp;
 
     public bool mode = false;
     int viewMode;
@@ -53,6 +55,8 @@ public class Planet : MonoBehaviour
         InitAsIcosohedron();
         Subdivide(2);
         CalculateNeighbours();
+
+        temperatureOffset = 20;
 
         System.Random rnd = new System.Random();
 
@@ -446,12 +450,11 @@ public class Planet : MonoBehaviour
         return newSet;
     }
 
-    public void changeViewMode()
+    public void changeViewMode(int index)
     {
-        viewMode++;
-        if (viewMode == 4)
-            viewMode = 0;
-        switch (viewMode)
+        viewMode = index;
+
+        switch (index)
         {
             case 0:
                 foreach (Polygon landPoly in landPolys)
@@ -462,7 +465,7 @@ public class Planet : MonoBehaviour
             case 1:
                 foreach (Polygon landPoly in landPolys)
                 {
-                    landPoly.m_Color = Color32.Lerp(colorToCold, colorToHot, (landPoly.temperature * 2) / 255f);
+                    landPoly.m_Color = Color32.Lerp(colorToCold, colorToHot, (landPoly.temperature + temperatureOffset) / 63f);
                 }
                 break;
             case 2:
@@ -632,7 +635,12 @@ public class Planet : MonoBehaviour
 
         Plants.RemoveAll(isDead);
 
-        player.updateProgress(finishedPlants.Count / (float)landPolys.Count);
+        float progess = finishedPlants.Count / (float)landPolys.Count;
+        player.updateProgress(progess);
+        if (progess >= 1)
+        {
+            popUp.SetActive(true);
+        }
     }
 
     private void GetClickedPoly()
@@ -655,28 +663,28 @@ public class Planet : MonoBehaviour
                             return;
                     }
 
-                    if (player.plantPlanted(10))
+                    if (player.plantPlanted(20))
                     {
-                        Plants.Add(new Plant(p));
+                        Plants.Add(new Plant(p, statusText));
                     }
                     else
                     {
-                        Debug.Log("Not enough currency");
+                        statusText.text = "Not enough currency";
                     }
                     
                 }
             } 
             else if (viewMode == 1)
             {
-                Debug.Log("Temperatur: " + p.temperature);
+                statusText.text = string.Format("Temperatur: {0:0.00}°C", p.temperature);
             }
             else if (viewMode == 2)
             {
-                Debug.Log("Feuchtigkeit: " + p.humidity);
+                statusText.text = string.Format("Feuchtigkeit: {0:0.}%", p.humidity);
             }
             else
             {
-                Debug.Log("Schwefelbelastung: " + p.sulfurLevel);
+                statusText.text = string.Format("Schwefelbelastung: {0:0.0}%", p.sulfurLevel);
             }
         }
     }

@@ -1,15 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
     public Text progressText;
-    public Text temperatureText;
-    public Text humidityText;
-    public Text sulfurText;
+    public Text temperatureToleranceText;
+    public Text temperaturePrefText;
+    public Text humidityToleranceText;
+    public Text humidityPrefText;
+    public Text sulfurToleranceText;
     public Text currencyText;
+
+    public Text statusText;
 
     private float lifetime;
 
@@ -32,11 +34,11 @@ public class Player : MonoBehaviour
         humidityBonusLvl = 1;
         sulfurBonusLvl = 1;
 
-        currency = 10;
+        currency = 1000;
 
-        temperatureText.text = "Tolerance: 10 + " + temperatureBonus;
-        humidityText.text = "Tolerance: 10 + " + humidityBonus;
-        sulfurText.text = "Tolerance: 15 + " + sulfurBonus;
+        temperatureToleranceText.text = "Tolerance: 10 + " + temperatureBonus;
+        humidityToleranceText.text = "Tolerance: 10 + " + humidityBonus;
+        sulfurToleranceText.text = "Tolerance: 15 + " + sulfurBonus;
     }
 
     private void Update()
@@ -81,11 +83,11 @@ public class Player : MonoBehaviour
             Plant.temperatureTolerance += temperatureBonus;
             temperatureBonusLvl++;
 
-            temperatureText.text = "Tolerance: 10 + " + temperatureBonus;
+            temperatureToleranceText.text = "Tolerance: 10 + " + temperatureBonus;
         }
         else
         {
-            Debug.Log("Not enough currency");
+            statusText.text = "Not enough currency";
         }
     }
 
@@ -98,11 +100,11 @@ public class Player : MonoBehaviour
             Plant.humidityTolerance += humidityBonus;
             humidityBonusLvl++;
 
-            humidityText.text = "Tolerance: 10 + " + humidityBonus;
+            humidityToleranceText.text = "Tolerance: 10 + " + humidityBonus;
         }
         else
         {
-            Debug.Log("Not enough currency");
+            statusText.text = "Not enough currency";
         }
     }
 
@@ -115,11 +117,11 @@ public class Player : MonoBehaviour
             Plant.sulfurTolerance += sulfurBonus;
             sulfurBonusLvl++;
 
-            sulfurText.text = "Tolerance: 15 + " + sulfurBonus;
+            sulfurToleranceText.text = "Tolerance: 15 + " + sulfurBonus;
         }
         else
         {
-            Debug.Log("Not enough currency");
+            statusText.text = "Not enough currency";
         }
         
     }

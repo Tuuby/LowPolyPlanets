@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class Plant
 {
@@ -14,24 +13,26 @@ public class Plant
     sbyte state;
     public sbyte lastState = -3;
 
-    float temperaturePref;
+    float temperaturePref { get; }
     public static float temperatureTolerance = 10;
-    float humidityPref;
-    public static float humidityTolerance = 10;
+    float humidityPref { get; }
+    public static float humidityTolerance = 20;
     public static float sulfurTolerance = 15;
     byte groundTypePref;
 
     public GameObject oldGameObject;
+    public Text statusText;
 
     private float lifetime;
 
-    public Plant(Polygon position)
+    public Plant(Polygon position, Text status)
     {
+        statusText = status;
         this.position = position;
         state = 0;
 
         temperaturePref = 15;
-        humidityPref = 40;
+        humidityPref = 50;
         groundTypePref = 2;
     }
 
@@ -68,19 +69,19 @@ public class Plant
                             else
                             {
                                 state = -1;
-                                Debug.Log("To much sulfur");
+                                statusText.text = "To much sulfur";
                             }
                         }
                         else
                         {
                             state = -1;
-                            Debug.Log("Not the right humidity");
+                            statusText.text = "Not the right humidity";
                         }
                     }
                     else
                     {
                         state = -1;
-                        Debug.Log("Not the right temperature");
+                        statusText.text = "Not the right temperature";
                     }
                 }
             } 
@@ -100,19 +101,19 @@ public class Plant
                             else
                             {
                                 state = -1;
-                                Debug.Log("To much sulfur, you monkey");
+                                statusText.text = "To much sulfur, you monkey";
                             }
                         }
                         else
                         {
                             state = -1;
-                            Debug.Log("Not the right humidity");
+                            statusText.text = "Not the right humidity";
                         }
                     }
                     else 
                     {
                         state = -1;
-                        Debug.Log("Not the right temperature");
+                        statusText.text = "Not the right temperature";
                     }
                 }
             }

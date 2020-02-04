@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Polygon
@@ -27,10 +26,10 @@ public class Polygon
     public void calculateTemperature(Vector3 centre, int temperatureOffset)
     {
         temperature = NoiseTest.Noise.CalcPixel3D((int)(centre.x * 100), (int)(centre.y * 100), (int)(centre.z * 100), 0.005f);
-        temperature /= 2;
+        temperature /= 4;
         temperature -= temperatureOffset;
-        //calculates values between 0-temperatureOffset and 127-temperatureOffset
-        //for temperatureOffset = 50 that means [-50, 77]
+        //calculates values between 0-temperatureOffset and 63-temperatureOffset
+        //for temperatureOffset = 20 that means [-20, 43]
     }
 
     public void calculateHumidity(Vector3 centre)
