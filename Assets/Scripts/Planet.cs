@@ -12,7 +12,6 @@ public class Planet : MonoBehaviour
 
     public GameObject SaplingPrefab;
     public GameObject DeadPrefab;
-    public GameObject PlantPrefab;
 
     GameObject m_GroundMesh;
     GameObject m_OceanMesh;
@@ -32,6 +31,8 @@ public class Planet : MonoBehaviour
     int viewMode;
 
     public Player player;
+
+    public UiController uiController;
 
     PolySet landPolys;
 
@@ -592,7 +593,7 @@ public class Planet : MonoBehaviour
                     case 1:
                         Destroy(plant.oldGameObject);
 
-                        GameObject plant1 = Instantiate(PlantPrefab);
+                        GameObject plant1 = Instantiate(plant.fullyGrownPrefab);
                         plant1.transform.parent = transform;
 
                         centre = calculateCentre(plant.position);
@@ -663,15 +664,23 @@ public class Planet : MonoBehaviour
                             return;
                     }
 
-                    if (player.plantPlanted(20))
+                    if (uiController.PlantToShow == null)
                     {
-                        Plants.Add(new Plant(p, statusText));
+                        statusText.text = "Please select a plant";
                     }
                     else
                     {
-                        statusText.text = "Not enough currency";
+                        if (player.plantPlanted(20))
+                        {
+                            Plant plant = new Plant(p, statusText, uiController.PlantToShow);
+                            Plants.Add(plant);
+
+                        }
+                        else
+                        {
+                            statusText.text = "Not enough currency";
+                        }
                     }
-                    
                 }
             } 
             else if (viewMode == 1)

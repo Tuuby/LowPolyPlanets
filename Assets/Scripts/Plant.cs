@@ -13,18 +13,52 @@ public class Plant
     sbyte state;
     public sbyte lastState = -3;
 
-    float temperaturePref { get; }
-    public static float temperatureTolerance = 10;
-    float humidityPref { get; }
-    public static float humidityTolerance = 20;
-    public static float sulfurTolerance = 15;
-    byte groundTypePref;
+    public float temperaturePref { get; }
+    public float temperatureTolerance { get; set; }
+    public float humidityPref { get; }
+    public float humidityTolerance { get; set; }
+    public float sulfurTolerance { get; set; }
+    public byte groundTypePref { get; }
+    public string plantName { get; }
 
     public GameObject oldGameObject;
     public Text statusText;
+    public GameObject fullyGrownPrefab;
 
     private float lifetime;
 
+    public Plant(Polygon position, Text status, PlantFamily family)
+    {
+        statusText = status;
+        this.position = position;
+        state = 0;
+
+        this.temperaturePref = family.temperaturePref;
+        this.humidityPref = family.humidityPref;
+        this.groundTypePref = family.groundTypePref;
+        this.fullyGrownPrefab = family.plantPrefab;
+
+        temperatureTolerance = family.temperatureTolerance;
+        humidityTolerance = family.humidityTolerance;
+        sulfurTolerance = family.sulfurTolerance;
+    }
+
+    public Plant(Polygon position, Text status, float temperaturePref, float humidityPref, byte groundTypePref)
+    {
+        statusText = status;
+        this.position = position;
+        state = 0;
+
+        this.temperaturePref = temperaturePref;
+        this.humidityPref = humidityPref;
+        this.groundTypePref = groundTypePref;
+
+        temperatureTolerance = 10;
+        humidityTolerance = 10;
+        sulfurTolerance = 15;
+    }
+
+    //Depricated constructor for standard plants
     public Plant(Polygon position, Text status)
     {
         statusText = status;

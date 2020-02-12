@@ -1,44 +1,24 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
     public Text progressText;
-    public Text temperatureToleranceText;
-    public Text temperaturePrefText;
-    public Text humidityToleranceText;
-    public Text humidityPrefText;
-    public Text sulfurToleranceText;
+    public Image progressBar;
     public Text currencyText;
 
     public Text statusText;
 
     private float lifetime;
 
-    int currency;
-
-    public int temperatureBonus;
-    int temperatureBonusLvl;
-    public int humidityBonus;
-    int humidityBonusLvl;
-    public int sulfurBonus;
-    int sulfurBonusLvl;
+    public int currency;
 
     private void Start()
     {
         progressText.text = "0%";
-        temperatureBonus = 0;
-        humidityBonus = 0;
-        sulfurBonus = 0;
-        temperatureBonusLvl = 1;
-        humidityBonusLvl = 1;
-        sulfurBonusLvl = 1;
-
-        currency = 1000;
-
-        temperatureToleranceText.text = "Tolerance: 10 + " + temperatureBonus;
-        humidityToleranceText.text = "Tolerance: 10 + " + humidityBonus;
-        sulfurToleranceText.text = "Tolerance: 15 + " + sulfurBonus;
+        progressBar.rectTransform.localScale = new Vector3(0, 1, 1);
+        currency = 20;
     }
 
     private void Update()
@@ -72,57 +52,11 @@ public class Player : MonoBehaviour
     public void updateProgress(float progress)
     {
         progressText.text = (int)(progress * 100) + "%";
+        progressBar.rectTransform.localScale = new Vector3(progress, 1, 1);
     }
 
-    public void increaseTemperatureBonus()
+    public void exit()
     {
-        if (temperatureBonusLvl * 5 <= currency)
-        {
-            currency -= temperatureBonusLvl * 5;
-            temperatureBonus += temperatureBonusLvl * 5;
-            Plant.temperatureTolerance += temperatureBonus;
-            temperatureBonusLvl++;
-
-            temperatureToleranceText.text = "Tolerance: 10 + " + temperatureBonus;
-        }
-        else
-        {
-            statusText.text = "Not enough currency";
-        }
-    }
-
-    public void increaseHumidityBonus()
-    {
-        if (humidityBonusLvl * 5 <= currency)
-        {
-            currency -= humidityBonusLvl * 5;
-            humidityBonus += humidityBonusLvl * 5;
-            Plant.humidityTolerance += humidityBonus;
-            humidityBonusLvl++;
-
-            humidityToleranceText.text = "Tolerance: 10 + " + humidityBonus;
-        }
-        else
-        {
-            statusText.text = "Not enough currency";
-        }
-    }
-
-    public void increaseSulfurBonus()
-    {
-        if (sulfurBonusLvl * 5 <= currency)
-        {
-            currency -= sulfurBonusLvl * 5;
-            sulfurBonus += sulfurBonusLvl * 5;
-            Plant.sulfurTolerance += sulfurBonus;
-            sulfurBonusLvl++;
-
-            sulfurToleranceText.text = "Tolerance: 15 + " + sulfurBonus;
-        }
-        else
-        {
-            statusText.text = "Not enough currency";
-        }
-        
+        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
 }
